@@ -1,0 +1,46 @@
+name: AutoIssueSSLCert
+
+on:
+  schedule:
+    - cron: "33 2 1 * *"
+  watch:
+    types: [started]
+
+env:
+    ACME: /home/runner/.acme.sh/acme.sh
+    DNSAPI: ${{ secrets.DNSAPI }}
+    ZIPPWD: ${{ secrets.ZIPPWD }}
+    CA: ${{ secrets.CA }}
+    EMAIL: ${{ secrets.EMAIL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install & Configure ACME.SH
+      run: |
+        wget -O -  https://get.acme.sh | sh -s email="$EMAIL"
+        $ACME --upgrade
+        echo "$DNSAPI" >> /home/runner/.acme.sh/account.conf
+    - name: Issue & Deploy Certificates
+      run: |
+        mkdir -p ./Certs
+        $ACME --register-account  -m "$EMAIL" --server "$CA"
+        # Wildcard certificate example.
+        # replace domain.com with your own domain name.
+        # Replace [DNS] with the DNS provider used for your own domain name.
+        $ACME --issue --server "$CA" --dns [DNS] -d *.domain.com -d domain.com
+        $ACME --installcert -d *.domain.com --key-file ./Certs/*.domain.com.key --fullchain-file ./Certs/*.domain.com.cer
+    - name: Commit
+      run: |
+        git config --global user.email "$EMAIL"
+        git config --global user.name "$NAME"
+        git add ./Certs.zip
+        git commit -m "Update Certs" -a
+    - name: Push
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
