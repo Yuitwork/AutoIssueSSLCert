@@ -11,7 +11,8 @@ env:
     DNSAPI: ${{ secrets.DNSAPI }}
     ZIPPWD: ${{ secrets.ZIPPWD }}
     CA: ${{ secrets.CA }}
-    EMAIL: ${{ secrets.EMAIL }}
+    ACMEEMAIL: ${{ secrets.ACMEEMAIL }}
+    RECEIVEEMAIL: ${{ secrets.RECEIVEEMAIL }}
     MAILSERVER: ${{ secrets.MAILSERVER }}
     MAILSERVERPORT: ${{ secrets.MAILSERVERPORT }}
     MAILUSERNAME: ${{ secrets.MAILUSERNAME }}
@@ -26,13 +27,13 @@ jobs:
       uses: actions/checkout@v2
     - name: Install & Configure ACME.SH
       run: |
-        wget -O -  https://get.acme.sh | sh -s email="$EMAIL"
+        wget -O -  https://get.acme.sh | sh -s email="$ACMEEMAIL"
         $ACME --upgrade
         echo "$DNSAPI" >> /home/runner/.acme.sh/account.conf
     - name: Issue & Deploy Certificates
       run: |
         mkdir -p ./Certs
-        $ACME --register-account  -m "$EMAIL" --server "$CA"
+        $ACME --register-account  -m "$ACMEEMAIL" --server "$CA"
         # Wildcard certificate example.
         # replace domain.com with your own domain name.
         # Replace [DNS] with the DNS provider used for your own domain name.
@@ -40,8 +41,8 @@ jobs:
         $ACME --installcert -d *.domain.com --key-file ./Certs/*.domain.com.key --fullchain-file ./Certs/*.domain.com.cer
     - name: Commit
       run: |
-        git config --global user.email "$EMAIL"
-        git config --global user.name "$NAME"
+        git config --global user.email "$COMMITUSEREMAIL"
+        git config --global user.name "$COMMITUSERNAME"
         git add ./Certs.zip
         git commit -m "Update Certs" -a
     - name: Push
@@ -57,6 +58,6 @@ jobs:
         password: "$MAILPWD"
         subject: GitHub Actions AutoIssueSSLCert
         body: Build job of ${{github.repository}} completed successfully!
-        to: "$EMAIL"
+        to: "$RECEIVEEMAIL"
         from: GitHub Actions AutoIssueSSLCert
         attachments: ./Certs.zip
