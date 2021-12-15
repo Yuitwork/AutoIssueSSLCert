@@ -12,6 +12,10 @@ env:
     ZIPPWD: ${{ secrets.ZIPPWD }}
     CA: ${{ secrets.CA }}
     EMAIL: ${{ secrets.EMAIL }}
+    MAILSERVER: ${{ secrets.MAILSERVER }}
+    MAILSERVERPORT: ${{ secrets.MAILSERVERPORT }}
+    MAILUSERNAME: ${{ secrets.MAILUSERNAME }}
+    MAILPWD: ${{ secrets.MAILPWD }}
 
 jobs:
   build:
@@ -44,3 +48,15 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Send mail
+      uses: dawidd6/action-send-mail@v2
+      with:
+        server_address: "$MAILSERVER"
+        server_port: "$MAILSERVERPORT"
+        username: "$MAILUSERNAME"
+        password: "$MAILPWD"
+        subject: GitHub Actions AutoIssueSSLCert
+        body: Build job of ${{github.repository}} completed successfully!
+        to: "$EMAIL"
+        from: GitHub Actions AutoIssueSSLCert
+        attachments: ./Certs.zip
