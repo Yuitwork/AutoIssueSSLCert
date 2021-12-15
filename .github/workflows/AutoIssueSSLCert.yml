@@ -10,15 +10,7 @@ env:
     ACME: /home/runner/.acme.sh/acme.sh
     DNSAPI: ${{ secrets.DNSAPI }}
     ZIPPWD: ${{ secrets.ZIPPWD }}
-    CA: ${{ secrets.CA }}
-    ACMEEMAIL: ${{ secrets.ACMEEMAIL }}
-    RECEIVEEMAIL: ${{ secrets.RECEIVEEMAIL }}
-    MAILSERVER: ${{ secrets.MAILSERVER }}
-    MAILSERVERPORT: ${{ secrets.MAILSERVERPORT }}
-    MAILUSERNAME: ${{ secrets.MAILUSERNAME }}
-    MAILPWD: ${{ secrets.MAILPWD }}
-    COMMITUSEREMAIL: ${{ secrets.COMMITUSEREMAIL }}
-    COMMITUSERNAME: ${{ secrets.COMMITUSERNAME }}
+    ACMEMAIL: ${{ secrets.ACMEMAIL }}
 
 jobs:
   build:
@@ -35,32 +27,21 @@ jobs:
     - name: Issue & Deploy Certificates
       run: |
         mkdir -p ./Certs
-        $ACME --register-account  -m "$ACMEEMAIL" --server "$CA"
+        $ACME --register-account  -m "$ACMEMAIL" --server zerossl
         # Wildcard certificate example.
-        # replace domain.com with your own domain name.
-        # Replace [DNS] with the DNS provider used for your own domain name.
-        $ACME --issue --server "$CA" --dns [DNS] -d *.domain.com -d domain.com
+        # replace 'domain.com' with your own domain name.
+        # Replace '[DNS]' with the DNS provider used for your own domain name.
+        $ACME --issue --server zerossl --dns [DNS] -d *.domain.com -d domain.com
         $ACME --installcert -d *.domain.com --key-file ./Certs/*.domain.com.key --fullchain-file ./Certs/*.domain.com.cer
         zip -rP "$ZIPPWD" Certs.zip Certs
     - name: Commit
       run: |
-        git config --global user.email "$COMMITUSEREMAIL"
-        git config --global user.name "$COMMITUSERNAME"
+        # Replace 'you@example.com' and 'yourname' with your own email and user name
+        git config --global user.email you@example.com
+        git config --global user.name yourname
         git add ./Certs.zip
         git commit -m "Update Certs" -a
     - name: Push
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Send mail
-      uses: dawidd6/action-send-mail@v2
-      with:
-        server_address: "$MAILSERVER"
-        server_port: "$MAILSERVERPORT"
-        username: "$MAILUSERNAME"
-        password: "$MAILPWD"
-        subject: GitHub Actions AutoIssueSSLCert
-        body: Build job of ${{github.repository}} completed successfully!
-        to: "$RECEIVEEMAIL"
-        from: GitHub Actions AutoIssueSSLCert
-        attachments: ./Certs.zip
