@@ -39,6 +39,7 @@ jobs:
         # Replace [DNS] with the DNS provider used for your own domain name.
         $ACME --issue --server "$CA" --dns [DNS] -d *.domain.com -d domain.com
         $ACME --installcert -d *.domain.com --key-file ./Certs/*.domain.com.key --fullchain-file ./Certs/*.domain.com.cer
+        zip -rP "$ZIPPWD" Certs.zip Certs
     - name: Commit
       run: |
         git config --global user.email "$COMMITUSEREMAIL"
