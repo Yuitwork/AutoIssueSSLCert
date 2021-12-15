@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Install & Configure ACME.SH
       run: |
-        wget -O -  https://get.acme.sh | sh -s email="$ACMEEMAIL"
+        wget -O -  https://get.acme.sh | sh -s email="$ACMEMAIL"
         $ACME --upgrade
         echo "$DNSAPI" >> /home/runner/.acme.sh/account.conf
     - name: Issue & Deploy Certificates
