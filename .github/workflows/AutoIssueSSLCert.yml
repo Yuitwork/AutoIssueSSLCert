@@ -17,6 +17,8 @@ env:
     MAILSERVERPORT: ${{ secrets.MAILSERVERPORT }}
     MAILUSERNAME: ${{ secrets.MAILUSERNAME }}
     MAILPWD: ${{ secrets.MAILPWD }}
+    COMMITUSEREMAIL: ${{ secrets.COMMITUSEREMAIL }}
+    COMMITUSERNAME: ${{ secrets.COMMITUSERNAME }}
 
 jobs:
   build:
