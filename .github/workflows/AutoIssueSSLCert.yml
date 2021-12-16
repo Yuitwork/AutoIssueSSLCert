@@ -2,6 +2,7 @@ name: AutoIssueSSLCert
 
 on:
   schedule:
+  # Configure appropriate periodic execution times.
     - cron: "33 2 1 * *"
   watch:
     types: [started]
