@@ -4,10 +4,8 @@ Automatically apply for SSL certificate through ACME.SH
 ## Text Guide
 
 1. Fork this repo
-1. Modification .github/workflows/AutoIssueSSLCert.yml
-1. Replace 'domain.com' with your own domain name.
-1. Replace '[DNS]' with the DNS provider used for your own domain name.
-1. Replace 'you@example.com' and 'yourname' with your own email and user name
+1. Modify '.github/workflows/AutoIssueSSLCert.yml' according to the comments
+1. Add the following secret
 1. Create secret 'DNSAPI'  
 export DP_Id="xxx"  
 export DP_Key="xxx"  
@@ -21,3 +19,8 @@ The zip file password you set yourself
     ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
 1. Click star in your forked repo
 1. Wait for the end of the run
+
+1. Download 'AutoIssueSSLCert.sh' to your server
+1. Modify 'AutoIssueSSLCert.sh' according to the comments
+1. Use crontab or other tools to execute 'AutoIssueSSLCert.sh' regularly
+1. Configure appropriate periodic execution times
