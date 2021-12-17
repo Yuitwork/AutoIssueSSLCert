@@ -1,5 +1,4 @@
 # AutoIssueSSLCert
-Automatically apply for SSL certificate through ACME.SH
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert?ref=badge_shield)
 ## Text Guide
 
