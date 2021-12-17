@@ -17,6 +17,7 @@ Your email address
 The zip file password you set yourself  
 1. Go to the **Action** tab in your forked repo
     ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert?ref=badge_shield)
 1. Click star in your forked repo
 1. Wait for the end of the run
 
@@ -24,3 +25,7 @@ The zip file password you set yourself
 1. Modify 'AutoIssueSSLCert.sh' according to the notes
 1. Use crontab or other tools to execute 'AutoIssueSSLCert.sh' regularly
 1. Configure appropriate periodic execution times
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FYuitwork%2FAutoIssueSSLCert?ref=badge_large)
