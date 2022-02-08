@@ -29,7 +29,7 @@ wget -O Certs.zip "${ZIPLINK}"
 mkdir old
 mkdir "old/${Date}"
 cd "${CERTFILE}"
-find -maxdepth 1 \! -name AutoIssueSSLCert \! -name yuiextensive_miseus.com.crt \! -name yuiextensive_miseus.com.key \! -name . -exec mv {} "AutoIssueSSLCert/old/${Date}" \;
+find -maxdepth 1 \! -name AutoIssueSSLCert \! -name . -exec mv {} "AutoIssueSSLCert/old/${Date}" \;
 cd "${CERTFILE}/AutoIssueSSLCert"
 unzip -P "${ZIPPWD}" Certs.zip
 cp -r Certs/* "${CERTFILE}"
