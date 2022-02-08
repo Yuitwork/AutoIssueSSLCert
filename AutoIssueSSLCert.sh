@@ -2,7 +2,7 @@
 
 #=================================================
 #  AutoIssueSSLCert
-#  Version: v0.1.1
+#  Version: v0.1.2
 #  Author: 夜棂依Yareiy
 #  GitHub: https://github.com/Yuitwork/AutoIssueSSLCert
 #=================================================
@@ -21,18 +21,34 @@ Date="`date +%Y%m%d`"
 # Start
 echo -e "${Info} Start !"
 cd "${CERTFILE}"
-mkdir AutoIssueSSLCert
-cd "${CERTFILE}/AutoIssueSSLCert"
+mkdir AutoIssueSSLCertTemp
+cd "${CERTFILE}/AutoIssueSSLCertTemp"
 echo -e "${Info} Start downloading Certs.zip !"
 wget -O Certs.zip "${ZIPLINK}"
-[[ ! -e "Certs.zip" ]] && echo -e "${Error} Certs.zip download failed !" && exit 1
-mkdir old
-mkdir "old/${Date}"
+[[ ! -e "Certs.zip" ]] && echo -e "${Error} Certs.zip Download failed !" && exit 1
+if [ -f "Certs.zip" ];then
+echo -e "${Info} Certs.zip Download successful !"
+else
+echo -e "${Error} Certs.zip Download failed !" && exit 1
+fi
+if [ ! -d "${CERTFILE}/AutoIssueSSLCertTemp/old" ];then
+mkdir "${CERTFILE}/AutoIssueSSLCertTemp/old"
+else
+echo -e "${Info} Folder already exists, skip"
+fi
+if [ ! -d "${CERTFILE}/AutoIssueSSLCertTemp/old/${Date}" ];then
+mkdir "${CERTFILE}/AutoIssueSSLCertTemp/old/${Date}"
 cd "${CERTFILE}"
-find -maxdepth 1 \! -name AutoIssueSSLCert \! -name . -exec mv {} "AutoIssueSSLCert/old/${Date}" \;
-cd "${CERTFILE}/AutoIssueSSLCert"
+find -maxdepth 1 \! -name AutoIssueSSLCertTemp \! -name . -exec mv {} "AutoIssueSSLCertTemp/old/${Date}" \;
+else
+echo -e "${Info} Folder already exists"
+cd "${CERTFILE}"
+mkdir "${CERTFILE}/AutoIssueSSLCertTemp/old/${Date}/1/"
+find -maxdepth 1 \! -name AutoIssueSSLCertTemp \! -name . -exec mv {} "AutoIssueSSLCertTemp/old/${Date}/1" \;
+fi
+cd "${CERTFILE}/AutoIssueSSLCertTemp"
 unzip -P "${ZIPPWD}" Certs.zip
-cp -r Certs/* "${CERTFILE}"
+\cp -rf Certs/* "${CERTFILE}"
 #################
 cd "${CERTFILE}"
 # If you need to modify the certificate name, you can add the code here
@@ -44,5 +60,7 @@ echo -e "${Info} Restart Web Server !"
 # Set the code to restart your own web server here
 # Example: systemctl restart nginx
 # systemctl restart nginx
+rm -rf "${CERTFILE}/AutoIssueSSLCertTemp/Certs.zip"
+rm -rf "${CERTFILE}/AutoIssueSSLCertTemp/Certs"
 #################
 echo -e "${Info} Done !"
